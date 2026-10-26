@@ -1,18 +1,110 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>...</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #000000;
-            overflow: hidden;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON CASINO 🎰</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body></body>
+<body>
+
+<!-- ======== ШАПКА ======== -->
+<header class="topbar led-border">
+  <div class="logo">🎰 NEON&nbsp;CASINO</div>
+  <div class="balance-box">
+    <span class="balance-label">БАЛАНС:</span>
+    <span id="balance" class="balance">300 ₽</span>
+    <button id="topUpBtn" class="btn btn-small" title="Пополнить до 300 (игрушечные деньги)">+300</button>
+  </div>
+</header>
+
+<!-- ======== НАВИГАЦИЯ ======== -->
+<nav class="tabs">
+  <button class="tab active" data-page="casino">🎡 КАЗИНО</button>
+  <button class="tab" data-page="roulette">🎯 РУЛЕТКА</button>
+  <button class="tab" data-page="guess">❓ УГАДАЙ ПРЕДМЕТ</button>
+</nav>
+
+<main>
+
+<!-- ==================== СТРАНИЦА: КАЗИНО (СЛОТЫ) ==================== -->
+<section id="page-casino" class="page active">
+  <div class="card led-border">
+    <h2 class="neon-red">🎰 СЛОТ-МАШИНА</h2>
+    <p class="hint">Каждый спин стоит <b>10 ₽</b>. Три одинаковых символа — крупный выигрыш!</p>
+
+    <div class="reels">
+      <div class="reel" id="reel0">🍒</div>
+      <div class="reel" id="reel1">💎</div>
+      <div class="reel" id="reel2">7️⃣</div>
+    </div>
+
+    <div class="paytable">
+      <div><span>7️⃣7️⃣7️⃣</span><b>+200 ₽</b></div>
+      <div><span>💎💎💎</span><b>+150 ₽</b></div>
+      <div><span>🔔🔔🔔</span><b>+100 ₽</b></div>
+      <div><span>🍋🍋🍋</span><b>+60 ₽</b></div>
+      <div><span>🍒🍒🍒</span><b>+40 ₽</b></div>
+      <div><span>🍒🍒✦</span><b>+15 ₽</b></div>
+    </div>
+
+    <button id="spinBtn" class="btn btn-big neon-white-btn">КРУТИТЬ! 🎲</button>
+    <div id="slotResult" class="result"></div>
+  </div>
+</section>
+
+<!-- ==================== СТРАНИЦА: РУЛЕТКА ==================== -->
+<section id="page-roulette" class="page">
+  <div class="card led-border">
+    <h2 class="neon-red">🎡 РУЛЕТКА</h2>
+    <p class="hint">Ставь на <span class="chip red-chip">КРАСНОЕ</span> (x2), <span class="chip black-chip">ЧЁРНОЕ</span> (x2) или <span class="chip green-chip">ЗЕРО</span> (x14). Ставка — <b>20 ₽</b>.</p>
+
+    <div class="wheel-wrap">
+      <div class="pointer">▼</div>
+      <div class="wheel" id="wheel">
+        <!-- секторы генерируются JS -->
+      </div>
+      <div class="wheel-center">₽</div>
+    </div>
+
+    <div class="bet-row">
+      <button class="btn bet-btn red-btn"   data-bet="red">🔴 КРАСНОЕ</button>
+      <button class="btn bet-btn green-btn" data-bet="green">🟢 ЗЕРО</button>
+      <button class="btn bet-btn black-btn" data-bet="black">⚫ ЧЁРНОЕ</button>
+    </div>
+
+    <div id="rouletteResult" class="result"></div>
+  </div>
+</section>
+
+<!-- ==================== СТРАНИЦА: УГАДАЙ ПРЕДМЕТ ==================== -->
+<section id="page-guess" class="page">
+  <div class="card led-border">
+    <h2 class="neon-red">❓ УГАДАЙ ПРЕДМЕТ</h2>
+    <p class="hint">Приз за победу — <b>50 ₽</b>. Попыток: <b>5</b>. Вход — <b>10 ₽</b>.</p>
+
+    <div id="guessGame">
+      <div class="mystery">❓</div>
+      <input type="text" id="playerNameInput" placeholder="Имя игрока" maxlength="20">
+      <input type="text" id="guessInput" placeholder="Введите название предмета..." maxlength="30" style="display:none;">
+      <div class="guess-actions">
+        <button id="startGuessBtn" class="btn btn-big neon-white-btn">НАЧАТЬ ИГРУ</button>
+        <button id="checkGuessBtn" class="btn btn-big neon-red-btn" style="display:none;">ПРОВЕРИТЬ</button>
+        <button id="newGuessBtn" class="btn" style="display:none;">НОВАЯ ИГРА (-10 ₽)</button>
+      </div>
+      <div id="attemptsLeft" class="attempts"></div>
+      <div id="guessResult" class="result"></div>
+      <ul id="guessLog" class="guess-log"></ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  ⚠️ Все деньги — игрушечные. Никаких настоящих рублей. Только неон и азарт!
+</footer>
+
+<script src="script.js"></script>
+</body>
 </html>

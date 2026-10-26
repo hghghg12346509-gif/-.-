@@ -1,0 +1,411 @@
+/* ============================================================
+   NEON CASINO — стиль светодиодных ламп: красный / белый / чёрный
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Russo+One&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --red: #ff1a1a;
+  --red-glow: rgba(255, 26, 26, 0.8);
+  --white: #ffffff;
+  --white-glow: rgba(255, 255, 255, 0.8);
+  --black: #0a0a0a;
+  --dark: #000000;
+}
+
+html, body {
+  min-height: 100%;
+  background-color: var(--dark);
+  /* фоновая "светодиодная" сетка */
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,26,26,0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.06), transparent 40%),
+    repeating-linear-gradient(0deg, transparent 0 39px, rgba(255,26,26,0.08) 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,0.05) 39px 40px);
+  color: var(--white);
+  font-family: 'Russo One', 'Arial', sans-serif;
+  overflow-x: hidden;
+}
+
+body { animation: bgFlicker 6s infinite alternate; }
+
+@keyframes bgFlicker {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.15); }
+}
+
+/* ========= СВЕТОДИОДНАЯ РАМКА (бегущие LED-огни) ========= */
+.led-border {
+  position: relative;
+  border-radius: 14px;
+  background: rgba(10,10,10,0.92);
+  padding: 22px;
+  overflow: hidden;
+}
+.led-border::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 10px;
+  pointer-events: none;
+  border: 3px dashed transparent;
+  background:
+    repeating-linear-gradient(90deg,
+      var(--red) 0 8px, transparent 8px 16px,
+      var(--white) 16px 24px, transparent 24px 32px) border-box;
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: ledRun 1.2s linear infinite;
+  filter: drop-shadow(0 0 6px var(--red-glow));
+}
+@keyframes ledRun {
+  to { background-position: 32px 0; }
+}
+
+/* ========= ШАПКА ========= */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px auto;
+  max-width: 900px;
+  width: calc(100% - 32px);
+}
+.logo {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(14px, 3vw, 24px);
+  color: var(--red);
+  text-shadow:
+    0 0 6px var(--red-glow),
+    0 0 18px var(--red-glow),
+    0 0 40px var(--red-glow);
+  animation: neonPulseRed 1.6s ease-in-out infinite alternate;
+}
+.balance-box { display: flex; align-items: center; gap: 10px; }
+.balance-label { color: #bbb; font-size: 14px; }
+.balance {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(12px, 2.5vw, 18px);
+  color: var(--white);
+  text-shadow: 0 0 8px var(--white-glow), 0 0 20px var(--white-glow);
+  transition: transform .2s;
+}
+.balance.win  { color: #7cff7c; text-shadow: 0 0 10px #7cff7c; transform: scale(1.2); }
+.balance.loss { color: var(--red); text-shadow: 0 0 10px var(--red-glow); transform: scale(0.9); }
+
+@keyframes neonPulseRed {
+  from { text-shadow: 0 0 4px var(--red-glow), 0 0 10px var(--red-glow); }
+  to   { text-shadow: 0 0 10px var(--red-glow), 0 0 30px var(--red-glow), 0 0 60px var(--red-glow); }
+}
+
+/* ========= ВКЛАДКИ ========= */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px auto 20px;
+  max-width: 900px;
+}
+.tab {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  padding: 12px 22px;
+  background: var(--black);
+  color: var(--white);
+  border: 2px solid #333;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .25s;
+}
+.tab:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 12px var(--red-glow);
+}
+.tab.active {
+  border-color: var(--red);
+  color: var(--red);
+  text-shadow: 0 0 8px var(--red-glow);
+  box-shadow: 0 0 16px var(--red-glow), inset 0 0 10px rgba(255,26,26,.25);
+  animation: tabBlink 1.4s steps(2) infinite;
+}
+@keyframes tabBlink {
+  50% { box-shadow: 0 0 6px var(--red-glow), inset 0 0 4px rgba(255,26,26,.15); }
+}
+
+/* ========= СТРАНИЦЫ / КАРТОЧКИ ========= */
+main { max-width: 900px; margin: 0 auto; padding: 0 16px 40px; }
+.page { display: none; }
+.page.active { display: block; animation: pageIn .35s ease; }
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+.card { text-align: center; }
+h2 { margin-bottom: 10px; letter-spacing: 1px; }
+.neon-red {
+  color: var(--red);
+  text-shadow: 0 0 8px var(--red-glow), 0 0 24px var(--red-glow);
+}
+.hint { color: #ccc; margin-bottom: 18px; font-size: 14px; }
+
+/* ========= КНОПКИ ========= */
+.btn {
+  font-family: 'Russo One', sans-serif;
+  cursor: pointer;
+  border-radius: 10px;
+  border: 2px solid var(--white);
+  background: var(--black);
+  color: var(--white);
+  padding: 10px 18px;
+  font-size: 15px;
+  transition: all .2s;
+}
+.btn:hover:not(:disabled) {
+  box-shadow: 0 0 14px var(--white-glow);
+  transform: translateY(-2px);
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-small { padding: 6px 12px; font-size: 13px; border-color: var(--red); color: var(--red); }
+.btn-big {
+  margin-top: 18px;
+  padding: 16px 34px;
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+.neon-white-btn {
+  border-color: var(--white);
+  color: var(--white);
+  text-shadow: 0 0 8px var(--white-glow);
+  box-shadow: 0 0 10px rgba(255,255,255,.35), inset 0 0 8px rgba(255,255,255,.15);
+}
+.neon-red-btn {
+  border-color: var(--red);
+  color: var(--red);
+  text-shadow: 0 0 8px var(--red-glow);
+  box-shadow: 0 0 10px var(--red-glow), inset 0 0 8px rgba(255,26,26,.2);
+}
+
+.result {
+  min-height: 30px;
+  margin-top: 16px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.result.good { color: #7cff7c; text-shadow: 0 0 10px #7cff7c; }
+.result.bad  { color: var(--red); text-shadow: 0 0 10px var(--red-glow); }
+
+/* ========= СЛОТЫ ========= */
+.reels {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+.reel {
+  width: 110px;
+  height: 120px;
+  font-size: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  border: 3px solid var(--red);
+  border-radius: 12px;
+  box-shadow: 0 0 18px var(--red-glow), inset 0 0 20px rgba(255,26,26,.2);
+}
+.reel.spinning { animation: reelShake .1s infinite; color: transparent; text-shadow: 0 0 20px #fff; }
+@keyframes reelShake {
+  0% { transform: translateY(-4px); }
+  50% { transform: translateY(4px); }
+  100% { transform: translateY(-4px); }
+}
+.reel.hit {
+  border-color: #fff;
+  box-shadow: 0 0 30px var(--white-glow);
+  animation: hitFlash .4s 4 alternate;
+}
+@keyframes hitFlash {
+  from { background: #111; }
+  to   { background: #400; }
+}
+
+.paytable {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 14px auto;
+  max-width: 560px;
+  font-size: 14px;
+}
+.paytable div {
+  background: #151515;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.paytable b { color: var(--red); text-shadow: 0 0 6px var(--red-glow); }
+
+/* ========= РУЛЕТКА ========= */
+.wheel-wrap {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 10px auto 24px;
+}
+.pointer {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  color: var(--white);
+  text-shadow: 0 0 10px var(--white-glow);
+  z-index: 5;
+}
+.wheel {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 6px solid var(--white);
+  box-shadow: 0 0 25px var(--red-glow), 0 0 60px rgba(255,255,255,.25), inset 0 0 25px rgba(0,0,0,.7);
+  position: relative;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(.17,.67,.25,1);
+}
+.sector {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 12px;
+  font-size: 13px;
+  font-weight: bold;
+  color: #fff;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.sector span { transform: rotate(22deg); }
+.sector.s-red   { background: radial-gradient(circle at 0 0, #ff4d4d, #b30000); }
+.sector.s-black { background: radial-gradient(circle at 0 0, #3a3a3a, #000); }
+.sector.s-green { background: radial-gradient(circle at 0 0, #2e9e4f, #0b4d22); }
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--black);
+  border: 3px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--red);
+  box-shadow: 0 0 15px var(--red-glow);
+  z-index: 4;
+}
+
+.chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  margin: 0 2px;
+}
+.red-chip   { background: var(--red); color: #fff; box-shadow: 0 0 8px var(--red-glow); }
+.black-chip { background: #222; border: 1px solid #666; color: #fff; }
+.green-chip { background: #0b4d22; border: 1px solid #2e9e4f; color: #fff; }
+
+.bet-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.bet-btn { min-width: 140px; }
+.red-btn {
+  border-color: var(--red);
+  color: var(--red);
+  box-shadow: 0 0 10px var(--red-glow);
+  text-shadow: 0 0 6px var(--red-glow);
+}
+.red-btn:hover:not(:disabled) { box-shadow: 0 0 22px var(--red-glow); }
+.black-btn { border-color: #777; color: #ddd; }
+.black-btn:hover:not(:disabled) { border-color: #fff; box-shadow: 0 0 16px var(--white-glow); }
+.green-btn { border-color: #2e9e4f; color: #6fe08c; }
+.green-btn:hover:not(:disabled) { box-shadow: 0 0 16px rgba(46,158,79,.8); }
+
+/* ========= УГАДАЙ ПРЕДМЕТ ========= */
+.mystery {
+  font-size: 90px;
+  margin: 10px 0 20px;
+  color: var(--red);
+  text-shadow: 0 0 20px var(--red-glow), 0 0 50px var(--red-glow);
+  animation: mysteryPulse 1.2s ease-in-out infinite alternate;
+}
+@keyframes mysteryPulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+#playerNameInput, #guessInput {
+  display: block;
+  width: min(420px, 100%);
+  margin: 10px auto;
+  padding: 14px;
+  font-size: 16px;
+  font-family: 'Russo One', sans-serif;
+  background: #111;
+  color: var(--white);
+  border: 2px solid #444;
+  border-radius: 10px;
+  text-align: center;
+  outline: none;
+  transition: all .2s;
+}
+#playerNameInput:focus, #guessInput:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 14px var(--red-glow);
+}
+.guess-actions { margin-top: 14px; }
+.attempts { margin-top: 14px; font-size: 16px; color: var(--white); text-shadow: 0 0 6px var(--white-glow); }
+.guess-log { list-style: none; margin: 14px auto 0; max-width: 420px; text-align: left; }
+.guess-log li {
+  background: #151515;
+  border-left: 4px solid var(--red);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 6px 0;
+  font-size: 14px;
+  animation: pageIn .3s ease;
+}
+
+/* ========= ПОДВАЛ ========= */
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 13px;
+  border-top: 1px solid #222;
+}
+
+/* ========= ЭКРАН ДЕНЕГ НЕ ХВАТАЕТ ========= */
+.shake { animation: shakeAnim .4s; }
+@keyframes shakeAnim {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+@media (max-width: 520px) {
+  .reel { width: 84px; height: 96px; font-size: 42px; }
+  .wheel-wrap, .wheel { width: 260px; height: 260px; }
+}
